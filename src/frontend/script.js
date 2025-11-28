@@ -1,10 +1,39 @@
 const fileInput = document.getElementById("fileInput");
+const modelSelect = document.getElementById("modelSelect");
 const fileContentBox = document.getElementById("fileContent");
-const sendBtn = document.getElementById("sendBtn");
 const resultBox = document.getElementById("result");
+const sendBtn = document.getElementById("sendBtn");
 
 let loadedText = null;
 
+
+async function loadModels() {
+    try {
+        const res = await fetch("http://localhost:3000/api/models");
+        const models = await res.json();
+
+        const select = document.getElementById("modelSelect");
+        select.innerHTML = "";
+
+        models.forEach(model => {
+            const option = document.createElement("option");
+            option.value = model;
+            option.textContent = model;
+            select.appendChild(option);
+        });
+
+    } catch (error) {
+        console.error("Falha ao carregar modelos:", error);
+        document.getElementById("modelSelect").innerHTML =
+            "<option>Erro ao carregar modelos</option>";
+    }
+}
+
+// Chama a função ao abrir a página
+loadModels();
+
+
+// Ler arquivo
 fileInput.addEventListener("change", async () => {
     const file = fileInput.files[0];
     if (!file) return;
@@ -15,6 +44,7 @@ fileInput.addEventListener("change", async () => {
     fileContentBox.textContent = text;
 });
 
+// Enviar ao backend → proxy → Ollama
 sendBtn.addEventListener("click", async () => {
     if (!loadedText) {
         alert("Envie um arquivo antes!");
@@ -23,13 +53,15 @@ sendBtn.addEventListener("click", async () => {
 
     resultBox.textContent = "Processando...";
 
+    const selectedModel = modelSelect.value;
+
     try {
         const response = await fetch("http://localhost:3000/api/ollama", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                model: "gemma3:1b",
-                prompt: `Faça uma análise zero-shot do seguinte texto:\n\n${loadedText}`
+                model: selectedModel,
+                prompt: `Analise juridicamente o seguinte documento:\n\n${loadedText}`
             })
         });
 
@@ -55,12 +87,12 @@ sendBtn.addEventListener("click", async () => {
                         resultBox.textContent = fullOutput;
                     }
                 } catch {
-                    // ignorar linhas inválidas
+                    console.error(e);
                 }
             }
         }
     } catch (err) {
         console.error(err);
-        resultBox.textContent = "Erro ao conectar ao proxy.";
+        resultBox.textContent = "Erro ao conectar ao servidor.";
     }
 });

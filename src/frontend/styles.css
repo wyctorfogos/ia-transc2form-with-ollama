@@ -1,78 +1,68 @@
 /* ================================
-   Tema jurídico – layout geral
+   Paleta institucional TJSP/TJES/TSE/STF
    ================================ */
 
 :root {
-  --bg-page: #f5f5f7;
-  --bg-panel: #ffffff;
-  --bg-header: #122033;
-  --bg-soft: #e6e8ef;
-
-  --accent-main: #1f4d7a;     /* azul institucional */
-  --accent-secondary: #b38b59;/* dourado discreto     */
-
-  --border-soft: #d3d6e0;
-  --text-main: #22252c;
-  --text-muted: #6b7280;
-  --shadow-soft: 0 8px 20px rgba(15, 23, 42, 0.08);
+  --gov-blue: #0d1b34;        /* Azul institucional TJ */
+  --gov-blue-light: #1b305c;
+  --gov-gold: #c8a15a;        /* Dourado sutil STF */
+  --gov-bg: #f4f5f7;
+  --gov-panel: #ffffff;
+  --gov-border: #d6d7db;
+  --gov-muted: #6b7280;
+  --gov-shadow: 0 4px 18px rgba(0,0,0,0.08);
 }
 
-* {
-  box-sizing: border-box;
-}
+/* ================================
+   Layout geral
+   ================================ */
 
 body {
   margin: 0;
   padding: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: radial-gradient(circle at top, #eef1f7 0, #f5f5f7 38%, #f2f2f2 100%);
-  color: var(--text-main);
+  background: var(--gov-bg);
+  font-family: "Segoe UI", system-ui, sans-serif;
+  color: #222;
 }
 
 /* ================================
-   Cabeçalho principal
+   Cabeçalho estilo TJSP/TJES/STF
    ================================ */
 
-.header {
-  background: linear-gradient(135deg, #122033, #1f2d44);
-  color: #f9fafb;
-  padding: 18px 32px;
+.gov-header {
+  background: var(--gov-blue);
+  color: #fff;
+  padding: 20px 32px;
+  box-shadow: 0 4px 25px rgba(0,0,0,0.25);
+  border-bottom: 4px solid var(--gov-gold);
+}
+
+.gov-container {
+  max-width: 1250px;
+  margin: auto;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.35);
-  position: sticky;
-  top: 0;
-  z-index: 10;
 }
 
-.header-title {
-  display: flex;
-  flex-direction: column;
-}
-
-.header-title h1 {
-  margin: 0;
+.gov-title h1 {
   font-size: 1.4rem;
-  letter-spacing: 0.03em;
+  margin: 0;
   text-transform: uppercase;
+  letter-spacing: 0.03em;
   font-weight: 600;
 }
 
-.header-title span {
-  font-size: 0.8rem;
-  opacity: 0.8;
+.gov-title span {
+  font-size: 0.85rem;
+  opacity: 0.85;
 }
 
-.header-badge {
-  border-radius: 999px;
-  border: 1px solid rgba(226, 232, 240, 0.6);
+.gov-badge {
+  background: rgba(255,255,255,0.2);
   padding: 6px 12px;
-  font-size: 0.78rem;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(15, 23, 42, 0.45);
+  border-radius: 8px;
+  font-size: 0.82rem;
 }
 
 /* ================================
@@ -80,220 +70,99 @@ body {
    ================================ */
 
 .main-wrap {
-  max-width: 1200px;
-  margin: 24px auto 32px auto;
-  padding: 0 16px;
-}
-
-.section-title {
-  margin-bottom: 10px;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-muted);
+  max-width: 1250px;
+  margin: 40px auto;
+  padding: 0 20px;
 }
 
 .container {
   display: flex;
+  gap: 25px;
   flex-wrap: wrap;
-  gap: 20px;
 }
 
 /* ================================
-   Painéis (Upload / Resultado)
+   Painéis estilo Tribunal
    ================================ */
 
 .panel {
-  flex: 1 1 360px;
-  background: var(--bg-panel);
-  border-radius: 14px;
-  border: 1px solid var(--border-soft);
-  box-shadow: var(--shadow-soft);
-  padding: 18px 18px 20px 18px;
-  display: flex;
-  flex-direction: column;
-  min-height: 280px;
+  flex: 1 1 48%;
+  background: var(--gov-panel);
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid var(--gov-border);
+  box-shadow: var(--gov-shadow);
   position: relative;
 }
 
-.panel-header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-.panel-header h2 {
-  margin: 0;
-  font-size: 1.0rem;
-  font-weight: 600;
-}
-
-.panel-header span {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-}
-
-/* Linha superior decorativa */
 .panel::before {
   content: "";
   position: absolute;
   top: 0;
-  left: 18px;
-  right: 18px;
+  left: 14px;
+  right: 14px;
   height: 3px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, var(--accent-main), var(--accent-secondary));
+  background: linear-gradient(90deg, var(--gov-blue-light), var(--gov-gold));
+  border-radius: 10px;
+}
+
+.panel h2 {
+  margin: 0 0 15px 0;
+  font-size: 1.1rem;
+  color: var(--gov-blue);
 }
 
 /* ================================
-   Inputs / Botões
+   Inputs
    ================================ */
 
-.form-group {
+.label {
+  font-size: 0.85rem;
+  color: var(--gov-muted);
+  margin-bottom: 6px;
+}
+
+input[type="file"],
+select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--gov-border);
+  background: #f9fafb;
+  font-size: 0.9rem;
   margin-bottom: 12px;
 }
 
-label {
-  font-size: 0.85rem;
-  font-weight: 500;
-  display: block;
-  margin-bottom: 4px;
-  color: var(--text-muted);
-}
-
-/* input file com cara de botão */
-input[type="file"] {
-  display: block;
-  width: 100%;
-  padding: 8px 6px;
-  border-radius: 10px;
-  border: 1px dashed var(--border-soft);
-  background: var(--bg-soft);
-  font-size: 0.85rem;
-  cursor: pointer;
-}
-
-input[type="file"]::file-selector-button {
+button#sendBtn {
+  background: linear-gradient(135deg, var(--gov-blue-light), var(--gov-blue));
   border: none;
-  outline: none;
-  padding: 6px 12px;
-  margin-right: 10px;
-  border-radius: 999px;
-  background: var(--accent-main);
-  color: #f9fafb;
-  font-size: 0.78rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  padding: 10px 20px;
+  border-radius: 20px;
+  color: #fff;
   cursor: pointer;
-}
-
-input[type="file"]:hover::file-selector-button {
-  background: #163558;
-}
-
-button,
-#sendBtn {
-  border: none;
-  outline: none;
-  border-radius: 999px;
-  padding: 8px 18px;
   font-size: 0.85rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  cursor: pointer;
-  background: linear-gradient(135deg, var(--accent-main), #163558);
-  color: #f9fafb;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.35);
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.25);
 }
 
-button:hover,
-#sendBtn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.45);
-}
-
-button:disabled,
-#sendBtn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  box-shadow: none;
+button#sendBtn:hover {
+  background: linear-gradient(135deg, var(--gov-blue), var(--gov-blue-light));
 }
 
 /* ================================
-   Áreas de texto / resultado
+   Conteúdo e resultado
    ================================ */
 
 pre {
-  white-space: pre-wrap;
-  word-wrap: break-word;
+  background: #f7f8fa;
+  padding: 12px;
   border-radius: 10px;
-  padding: 10px 12px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  font-size: 0.82rem;
-  font-family: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  max-height: 340px;
+  border: 1px solid #e5e7eb;
+  max-height: 350px;
   overflow-y: auto;
+  font-family: "JetBrains Mono", monospace;
+  white-space: pre-wrap;
 }
 
-/* Conteúdo carregado (texto do arquivo) */
-#fileContent {
-  background: #fdfdfd;
-}
-
-/* Resultado do Ollama com estilo “parecer” */
 #result {
-  background: #f9fafb;
-  border-left: 4px solid var(--accent-secondary);
-}
-
-/* Indicadores de estado (carregando / erro) */
-
-.status {
-  margin-top: 6px;
-  font-size: 0.78rem;
-  color: var(--text-muted);
-}
-
-.status--error {
-  color: #b91c1c;
-}
-
-.status--success {
-  color: #166534;
-}
-
-/* Pequeno “rodapé” institucional */
-
-.footer {
-  margin-top: 22px;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  text-align: right;
-  opacity: 0.85;
-}
-
-/* ================================
-   Responsivo
-   ================================ */
-
-@media (max-width: 768px) {
-  .header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-
-  .container {
-    flex-direction: column;
-  }
-
-  .panel {
-    min-height: auto;
-  }
+  border-left: 4px solid var(--gov-gold);
 }

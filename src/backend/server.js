@@ -28,6 +28,19 @@ app.post("/api/ollama", async (req, res) => {
     }
 });
 
+// Rota para listar modelos do Ollama
+app.get("/api/models", async (req, res) => {
+    try {
+        const response = await fetch(`${OLLAMA_URL}/api/tags`);
+        const data = await response.json();
+        res.json(data.models.map(m => m.name));
+    } catch (err) {
+        console.error("Erro ao listar modelos:", err);
+        res.status(500).json({ error: "Erro ao obter modelos do Ollama" });
+    }
+});
+
+
 // Iniciar servidor
 app.listen(3000, () => {
     console.log("🚀 Servidor rodando na porta 3000");

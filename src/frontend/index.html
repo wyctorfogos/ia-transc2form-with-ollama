@@ -3,41 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema Jurídico — Análise via OLLAMA</title>
+    <title>Sistema Jurídico — IA Assistiva</title>
 
-    <!-- CSS externo -->
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
-<header class="header">
-    <div class="header-title">
-        <h1>Sistema Jurídico — IA Assistiva</h1>
+<!-- Barra superior estilo Tribunal -->
+<header class="gov-header">
+    <div class="gov-container">
+        <div class="gov-title">
+            <h1>Sistema de Análise Jurídica Assistida por IA</h1>
+            <span>Tribunal Virtual — Modelo TJSP / TJES / TSE / STF</span>
+        </div>
+        <div class="gov-badge">Ambiente de Testes</div>
     </div>
 </header>
 
 <div class="main-wrap">
 
     <div class="container">
+
         <!-- Painel de upload -->
         <div class="panel">
-            <h2>Upload do Arquivo</h2>
+            <h2>Upload do Documento</h2>
 
+            <label class="label">Escolher arquivo (.txt ou .json)</label>
             <input type="file" id="fileInput" accept=".txt,.json"/>
 
-            <button id="sendBtn">Enviar ao OLLAMA</button>
+            <label class="label" style="margin-top:15px;">Selecionar Modelo de LLM:</label>
+            <select id="modelSelect"></select>
 
-            <h3>Conteúdo do arquivo:</h3>
+
+            <button id="sendBtn">Processar com IA</button>
+
+            <h3>Conteúdo do Arquivo:</h3>
             <pre id="fileContent">Nenhum arquivo carregado.</pre>
         </div>
 
         <!-- Painel de resposta -->
         <div class="panel">
-            <h2>Resultado do OLLAMA</h2>
+            <h2>Resultado da Análise</h2>
             <pre id="result">Nenhum resultado ainda.</pre>
         </div>
+
     </div>
+
 </div>
 
 <script src="script.js"></script>
