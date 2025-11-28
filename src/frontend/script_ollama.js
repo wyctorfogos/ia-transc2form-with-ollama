@@ -5,46 +5,70 @@ const resultBox = document.getElementById("result");
 const sendBtn = document.getElementById("sendBtn");
 
 let loadedText = null;
+const OLLAMA_SERVICE_HOSTNAME = "172.26.252.21"; // os.getenv('OLLAMA_SERVICE_HOSTNAME');
+const OLLAMA_SERVICE_PORT = "8010";
 
-// ============================
-//  CONFIGURAÇÃO DO AZURE OPENAI
-// ============================
-AZURE_OPENAI_ENDPOINT=""
-AZURE_OPENAI_DEPLOYMENT_NAME=""
-AZURE_OPENAI_API_KEY=""
-AZURE_OPENAI_API_VERSION=""
+async function loadModels() {
+    try {
+        const res = await fetch(`http://${OLLAMA_SERVICE_HOSTNAME}:${OLLAMA_SERVICE_PORT}/api/models`);
+        const models = await res.json();
 
-// Modelos disponíveis (Azure não tem endpoint de modelos)
-modelSelect.innerHTML = `
-    <option value="gpt-4o">gpt-4o</option>
-    <option value="gpt-4o-mini">gpt-4o-mini</option>
-`;
+        const select = document.getElementById("modelSelect");
+        select.innerHTML = "";
 
-// ============================
-//   LEITURA DO ARQUIVO
-// ============================
+        models.forEach(model => {
+            const option = document.createElement("option");
+            option.value = model;
+            option.textContent = model;
+            select.appendChild(option);
+        });
+
+    } catch (error) {
+        console.error("Falha ao carregar modelos:", error);
+        document.getElementById("modelSelect").innerHTML =
+            "<option>Erro ao carregar modelos</option>";
+    }
+}
+
+// Chama a função ao abrir a página
+loadModels();
+
+
+// Leitura garantida em UTF-8 (remove BOM se presente) e substitui o listener padrão
 async function readFileAsUtf8(file) {
     try {
         const buffer = await file.arrayBuffer();
         const decoder = new TextDecoder("utf-8");
         let text = decoder.decode(buffer);
-
-        if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+        // Remover BOM se existir
+        if (text.charCodeAt(0) === 0xFEFF) {
+            text = text.slice(1);
+        }
         return text;
-    } catch {
-        try { return await file.text(); }
-        catch { return null; }
+    } catch (err) {
+        console.error("Erro ao ler arquivo como UTF-8:", err);
+        // fallback para File.text() caso algo falhe
+        try {
+            const fallback = await file.text();
+            return fallback;
+        } catch (e) {
+            console.error("Fallback também falhou:", e);
+            return null;
+        }
     }
 }
 
+// Substitui qualquer outro listener de "change" chamando stopImmediatePropagation
 fileInput.addEventListener("change", async (event) => {
+    // Impede que outros listeners (incluindo o existente no final do arquivo) sejam executados
+    event.stopImmediatePropagation();
+
     const file = fileInput.files[0];
     if (!file) return;
 
     const text = await readFileAsUtf8(file);
-
-    if (!text) {
-        alert("Não foi possível ler o arquivo.");
+    if (text === null) {
+        alert("Não foi possível ler o arquivo em UTF-8.");
         return;
     }
 
@@ -52,9 +76,7 @@ fileInput.addEventListener("change", async (event) => {
     fileContentBox.textContent = text;
 });
 
-// ============================
-//     GERADOR DE PROMPT
-// ============================
+
 let gerarPrompt = (texto) => {
     return `Você é um Assistente Jurídico Especialista em Processamento de Linguagem Natural.  
         Sua função é analisar depoimentos brutos e extrair informações para o "Formulário Nacional de Avaliação de Risco" do CNJ.
@@ -133,10 +155,7 @@ let gerarPrompt = (texto) => {
         ${texto}`;
         };
 
-
-// ============================
-//      ENVIO AO AZURE
-// ============================
+// Enviar ao backend → proxy → Ollama
 sendBtn.addEventListener("click", async () => {
     if (!loadedText) {
         alert("Envie um arquivo antes!");
@@ -145,37 +164,50 @@ sendBtn.addEventListener("click", async () => {
 
     resultBox.textContent = "Processando...";
 
+    const selectedModel = modelSelect.value;
+
     try {
-        const model = modelSelect.value;
-        const prompt = gerarPrompt(loadedText);
-
-        const url = AZURE_OPENAI_ENDPOINT;
-
-        const body = {
-            messages: [
-                { role: "user", content: prompt }
-            ],
-            temperature: 0.1,
-            max_tokens: 4096
-        };
-
-        const response = await fetch(url, {
+        const response = await fetch(`http://${OLLAMA_SERVICE_HOSTNAME}:${OLLAMA_SERVICE_PORT}/api/form_response`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "api-key": AZURE_OPENAI_API_KEY
-            },
-            body: JSON.stringify(body)
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                model: selectedModel,
+                prompt: gerarPrompt(loadedText)
+            })
         });
 
-        const data = await response.json();
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
 
-        const text = data.choices?.[0]?.message?.content || "Sem resposta.";
+        let fullOutput = "";
 
-        resultBox.textContent = text;
+        while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
 
+            const chunk = decoder.decode(value);
+            const lines = chunk.split("\n");
+
+            for (const line of lines) {
+                if (!line.trim()) continue;
+
+                try {
+                    const json = JSON.parse(line);
+                    if (json.response) {
+                        fullOutput += json.response;
+                        resultBox.textContent = fullOutput;
+                    }
+                } catch (e){
+                    console.error(e);
+                }
+            }
+        }
     } catch (err) {
         console.error(err);
-        resultBox.textContent = "Erro ao conectar ao Azure OpenAI.";
+        resultBox.textContent = "Erro ao conectar ao servidor.";
     }
 });
+
+
+
+application
