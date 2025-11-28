@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Jurídico — Análise via OLLAMA</title>
+
+    <!-- CSS externo -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<header class="header">
+    <div class="header-title">
+        <h1>Sistema Jurídico — IA Assistiva</h1>
+    </div>
+</header>
+
+<div class="main-wrap">
+
+    <div class="container">
+        <!-- Painel de upload -->
+        <div class="panel">
+            <h2>Upload do Arquivo</h2>
+
+            <input type="file" id="fileInput" accept=".txt,.json"/>
+
+            <button id="sendBtn">Enviar ao OLLAMA</button>
+
+            <h3>Conteúdo do arquivo:</h3>
+            <pre id="fileContent">Nenhum arquivo carregado.</pre>
+        </div>
+
+        <!-- Painel de resposta -->
+        <div class="panel">
+            <h2>Resultado do OLLAMA</h2>
+            <pre id="result">Nenhum resultado ainda.</pre>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  frontend:
+    build:
+      context: ../src/frontend
+      dockerfile: Dockerfile
+    container_name: ollama-frontend
+    ports:
+      - "8080:80"
+    networks:
+      - ollama-net
+
+  ollama-proxy:
+    build:
+      context: ../
+      dockerfile: src/backend/dockerfile
+    container_name: ollama-proxy
+    ports:
+      - "3000:3000"
+    environment:
+      OLLAMA_URL: "http://host.docker.internal:11434"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+
+networks:
+  ollama-net:
+    driver: bridge
